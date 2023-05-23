@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Game
 {
@@ -116,48 +116,47 @@ namespace Game
                     // Run Board Check
                     boardCheck(tacBoard); // (victory | defeat) condition check
 
-                    // CPU Turn
-                    int tempC = random.Next(3);
-                    int tempD = random.Next(3);
-
-                    // Duplication Check
-                    if ((markBoard[tempC, tempD] == 1) ||
-                        (tempC == tempA && tempD == tempB))
-                    {
-                        while ((markBoard[tempC, tempD] == 1) && (tempC == tempA && tempD == tempB))
-                        {
-                            tempC = random.Next(2);
-                            tempD = random.Next(2);
-                        }
-
-                    }
-                    Console.WriteLine($"CPU position : {tempC} {tempD}\n");
-
-                    // Update Board (2D Array)
-                    if (tacBoard[tempC, tempD] == "[]" && markBoard[tempC, tempD] == 0)
-                    {
-                        tacBoard[tempC, tempD] = $"{cpuLetter}";
-                        markBoard[tempC, tempD] = 1;
-                    }
-
-                    // Debug (print markBoard)
-                    Console.Write("Spaces open : ");
-                    foreach (int item in markBoard)
-                    {
-                        Console.Write($"{item} ");
-                    }
-                    Console.WriteLine("");
-                    Console.Write("Current Board : ");
-                    foreach (String item in tacBoard)
-                    {
-                        Console.Write($"{item} ");
-                    }
-                    Console.WriteLine("");
-
-                    // Run Board Check
-                    boardCheck(tacBoard); // (victory | defeat) condition check
-
                     iteration++;
+
+                    if (iteration != 5)
+                    {
+                        // CPU Turn
+                        int tempC = random.Next(3);
+                        int tempD = random.Next(3);
+
+                        // Duplication Check
+                        if (markBoard[tempA, tempB] == 1 && tacBoard[tempA, tempB] != "[]")
+                        {
+                            // until I find an open space
+                            retry(markBoard, tempA, tempB);
+
+                        }
+                        else
+                        {
+                            markBoard[tempA, tempB] = 1;
+                            tacBoard[tempA, tempB] = $"{cpuLetter}";
+                        }
+                        Console.WriteLine($"CPU position : {tempC} {tempD}\n");
+
+
+                        // Debug (print markBoard)
+                        Console.Write("Spaces open : ");
+                        foreach (int item in markBoard)
+                        {
+                            Console.Write($"{item} ");
+                        }
+                        Console.WriteLine("");
+                        Console.Write("Current Board : ");
+                        foreach (String item in tacBoard)
+                        {
+                            Console.Write($"{item} ");
+                        }
+                        Console.WriteLine("");
+
+                        // Run Board Check
+                        boardCheck(tacBoard); // (victory | defeat) condition check
+                    }
+
                 }
             } else {
                 while (iteration < 4)
@@ -175,20 +174,19 @@ namespace Game
                     if (markBoard[tempA, tempB] == 1 && tacBoard[tempA, tempB] != "[]")
                     {
                         // until I find an open space
-
-                        while (markBoard[tempA, tempB] == 1)
-                        {
-                            tempA = random.Next(2);
-                            tempB = random.Next(2);
-                        }
+                        retry(markBoard, tempA, tempB);
+                    } else
+                    {   
+                        markBoard[tempA, tempB] = 1;
+                        tacBoard[tempA, tempB] = $"{cpuLetter}";
                     }
 
                     // Update Board (2D Array)
-                    if (tacBoard[tempA, tempB] == "[]" && markBoard[tempA, tempB] == 0)
-                    {
-                        tacBoard[tempA, tempB] = $"{cpuLetter}";
-                        markBoard[tempA, tempB] = 1;
-                    }
+                    //if (tacBoard[tempA, tempB] == "[]" && markBoard[tempA, tempB] == 0)
+                    //{
+                    //    tacBoard[tempA, tempB] = $"{cpuLetter}";
+                    //    markBoard[tempA, tempB] = 1;
+                    //}
 
                     Console.WriteLine($"\nCPU position : {tempA} {tempB}");
                    
@@ -231,8 +229,13 @@ namespace Game
                 }
 
             }
-            Console.WriteLine("\nDraw !!!");
+
+            Console.WriteLine("\n\nDraw !!!");
+            Console.WriteLine("\n=============================");
+            Console.WriteLine("|\tTic Tac Toe\t    |");
+            Console.WriteLine("=============================\n");
             displayBoard(tacBoard);
+            Console.WriteLine("\n\n=============================");
             Console.WriteLine("\nThanks For Playing !!!!");
 
             Console.ReadKey();
@@ -294,6 +297,25 @@ namespace Game
                     // diagonal check
                 }
             }
+        }
+        public static void retry(int[,] array, int a, int b) {
+            Random random = new Random();
+            a = random.Next(3);
+            b = random.Next(3);
+
+            if(markBoard[a, b] == 1 && tacBoard[a, b] != "[]")
+            {
+                retry(array, a, b);
+
+            }
+            else
+            {
+                Console.WriteLine($"\nNew Pos: {a} {b}");
+                tacBoard[a, b] = $"{cpuLetter}";
+                markBoard[a, b] = 1;
+                return;
+            }
+            
         }
     }
 }
